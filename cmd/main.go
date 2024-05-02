@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/wjojf/go-bubbletea-sample/pkg/app"
+	"github.com/wjojf/go-bubbletea-sample/internal/pkg/app"
 )
 
 func main() {
 	app := app.NewApp()
-	app.Start()
+	if err := app.Start(); err != nil {
+		panic(err)
+	}
 }
