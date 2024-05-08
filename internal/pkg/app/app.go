@@ -1,9 +1,12 @@
 package app
 
 import (
+	"github.com/wjojf/go-ssh-tui/internal/screens/initial"
+	"os"
+
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/wjojf/go-bubbletea-sample/internal/model"
-	"github.com/wjojf/go-bubbletea-sample/internal/pkg/config"
+	"github.com/wjojf/go-ssh-tui/internal/pkg/config"
+	"github.com/wjojf/go-ssh-tui/internal/types"
 )
 
 type App struct {
@@ -17,11 +20,16 @@ func NewApp() *App {
 		panic(err)
 	}
 
-	return &App{
-		tea: tea.NewProgram(
-			model.NewInitialModel(),
+	return &App{tea: tea.NewProgram(
+		initial.NewModel(
+			initial.ModelOpts{
+				User: os.Getenv("USER"),
+				Actions: []types.Action{
+					types.MockAction{},
+				},
+			},
 		),
-	}
+	)}
 }
 
 func (a *App) Start() error {

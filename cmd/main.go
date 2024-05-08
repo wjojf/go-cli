@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wjojf/go-bubbletea-sample/internal/pkg/app"
+	"github.com/wjojf/go-ssh-tui/internal/pkg/app"
 )
 
 func main() {
