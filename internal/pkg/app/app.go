@@ -1,11 +1,9 @@
 package app
 
 import (
-	"github.com/wjojf/go-ssh-tui/internal/screens/initial"
-	"os"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/wjojf/go-ssh-tui/internal/pkg/config"
+	"github.com/wjojf/go-ssh-tui/internal/screens/initial"
 	"github.com/wjojf/go-ssh-tui/internal/types"
 )
 
@@ -23,7 +21,6 @@ func NewApp() *App {
 	return &App{tea: tea.NewProgram(
 		initial.NewModel(
 			initial.ModelOpts{
-				User: os.Getenv("USER"),
 				Actions: []types.Action{
 					types.MockAction{},
 				},

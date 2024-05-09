@@ -7,5 +7,5 @@ import (
 
 type Opts[T utils.Stringable] struct {
 	Options []T
-	Style   *lipgloss.Style
+	Style   lipgloss.Style
 }

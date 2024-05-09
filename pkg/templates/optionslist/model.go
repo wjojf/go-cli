@@ -2,31 +2,26 @@ package optionslist
 
 import (
 	"fmt"
+	"github.com/charmbracelet/lipgloss"
 
-	"github.com/wjojf/go-ssh-tui/pkg/component"
 	"github.com/wjojf/go-ssh-tui/pkg/utils"
 )
 
 type OptionsList[T utils.Stringable] struct {
-	component.Base
-
 	options  []T
 	selected map[int]struct{}
 
 	cursor int
+
+	style lipgloss.Style
 }
 
 func NewOptionsList[T utils.Stringable](opts Opts[T]) *OptionsList[T] {
-	l := &OptionsList[T]{
+	return &OptionsList[T]{
 		options:  opts.Options,
 		selected: make(map[int]struct{}),
+		style:    opts.Style,
 	}
-
-	if opts.Style != nil {
-		l.SetStyle(*opts.Style)
-	}
-
-	return l
 }
 
 // Render implements the component interface
@@ -56,7 +51,7 @@ func (l *OptionsList[T]) renderSingleItem(selected bool, option T) string {
 
 	s := fmt.Sprintf("[ %v ] %v", selectedStr, option.String())
 
-	return l.Style.Render(s)
+	return l.style.Render(s)
 }
 
 func (l *OptionsList[T]) Toggle(index int) {

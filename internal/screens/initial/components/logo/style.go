@@ -2,11 +2,11 @@ package logo
 
 import "github.com/charmbracelet/lipgloss"
 
-var (
-	LogoStyles = lipgloss.NewStyle().
+func GetStyles() lipgloss.Style {
+
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#FF00FF")).
 		Bold(true).
-		// Foreground(lipgloss.Color("F5BA22")).
-		BorderStyle(lipgloss.RoundedBorder()).
-		// BorderForeground(lipgloss.Color("F5BA22"))
-		AlignHorizontal(lipgloss.Center)
-)
+		Border(lipgloss.DoubleBorder(), true, true, true, true).
+		BorderForeground(lipgloss.Color("#FF00FF"))
+}

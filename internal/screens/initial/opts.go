@@ -5,6 +5,5 @@ import (
 )
 
 type ModelOpts struct {
-	User    string
 	Actions []types.Action
 }

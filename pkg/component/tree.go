@@ -1,15 +1,14 @@
 package component
 
-type Tree []Component
+// Tree is a collection of static components.
+type Tree map[string]Component
 
-func NewTree(components ...Component) Tree {
+func NewTree() Tree {
+	return make(map[string]Component)
+}
 
-	tree := make(Tree, 0, len(components))
-	for _, c := range components {
-		tree = append(tree, c)
-	}
-
-	return tree
+func (t Tree) Add(name string, c Component) {
+	t[name] = c
 }
 
 func (t Tree) Render() string {
