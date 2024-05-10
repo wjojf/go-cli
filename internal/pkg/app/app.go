@@ -4,7 +4,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/wjojf/go-ssh-tui/internal/pkg/config"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial"
-	"github.com/wjojf/go-ssh-tui/internal/types"
 )
 
 type App struct {
@@ -18,15 +17,9 @@ func NewApp() *App {
 		panic(err)
 	}
 
-	return &App{tea: tea.NewProgram(
-		initial.NewModel(
-			initial.ModelOpts{
-				Actions: []types.Action{
-					types.MockAction{},
-				},
-			},
-		),
-	)}
+	return &App{
+		tea: tea.NewProgram(initial.NewModel()),
+	}
 }
 
 func (a *App) Start() error {

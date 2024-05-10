@@ -1,18 +1,26 @@
 package types
 
-type Action interface {
-	Execute() error
-	Name() string
-}
+var (
+	DefaultActionList = ActionList{
+		MockAction{},
+		MockAction{},
+		MockAction{},
+	}
+)
 
-type ActionList []Action
+type Action interface {
+	Name() string
+	Description() string
+}
 
 type MockAction struct{}
 
-func (m MockAction) Execute() error {
-	return nil
+func (m MockAction) Name() string {
+	return "MockAction"
 }
 
-func (m MockAction) Name() string {
-	return "Mock Action"
+func (m MockAction) Description() string {
+	return "MockAction description"
 }
+
+type ActionList []Action

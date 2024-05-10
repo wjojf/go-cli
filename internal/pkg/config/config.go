@@ -7,7 +7,8 @@ var (
 	ErrConigAlreadySet         = errors.New("config already set")
 )
 
-type config struct{}
+type config struct {
+}
 
 func Get() *config {
 	return cfg
