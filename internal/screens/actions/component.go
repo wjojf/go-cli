@@ -9,7 +9,7 @@ func GetList(actions ...FilterableAction) list.Model {
 		items = append(items, a)
 	}
 
-	l := list.New(items, list.NewDefaultDelegate(), 25, 25)
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
 	l.Title = "Choose an action"
 
 	return l

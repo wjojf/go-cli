@@ -4,7 +4,6 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"log"
 )
 
 type Model struct {
@@ -18,10 +17,13 @@ func NewModel(opts ModelOpts) *Model {
 
 	actions := FromActionList(opts.Actions)
 
+	l := GetList(actions...)
+	l.Styles.Title = l.Styles.Title.Bold(true)
+
 	return &Model{
 		actions: actions,
 		style:   ListStyle,
-		list:    GetList(actions...),
+		list:    l,
 	}
 }
 
@@ -39,7 +41,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case tea.WindowSizeMsg:
-		log.Printf("Window size changed: %d x %d", msg.Width, msg.Height)
 		h, v := m.style.GetFrameSize()
 		m.list.SetSize(msg.Width-h, msg.Height-v)
 	}
