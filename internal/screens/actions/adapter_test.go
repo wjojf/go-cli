@@ -9,7 +9,7 @@ import (
 func TestAdapterItem(t *testing.T) {
 
 	var item list.Item = ItemAction{
-		Action: action.MockAction{},
+		Action: action.DockerRestart{},
 	}
 
 	if _, ok := item.(list.DefaultItem); !ok {
