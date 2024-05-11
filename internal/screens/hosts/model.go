@@ -15,6 +15,8 @@ type Model struct {
 
 	list  list.Model
 	style lipgloss.Style
+
+	next tea.Model
 }
 
 func NewModel(opts ModelOpts) *Model {
@@ -34,7 +36,25 @@ func (m *Model) Init() tea.Cmd {
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return m, nil
+	var cmd tea.Cmd
+
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.Type {
+		case tea.KeyCtrlC:
+			return m, tea.Quit
+		case tea.KeyEnter:
+			return m, nil
+		}
+	case tea.WindowSizeMsg:
+		h, v := m.style.GetFrameSize()
+		m.list.SetSize(msg.Width-h, msg.Height-v)
+		m.style = GetListStyles(msg.Width)
+	}
+
+	m.list, cmd = m.list.Update(msg)
+
+	return m, cmd
 }
 
 func (m *Model) View() string {
@@ -42,5 +62,18 @@ func (m *Model) View() string {
 		return "No action selected"
 	}
 
-	return m.process.Action.Name()
+	var s string
+
+	s += m.style.Render(m.list.View())
+
+	return s
+}
+
+func (m *Model) handleEnter() (tea.Model, tea.Cmd) {
+
+	host := m.hosts[m.list.Cursor()]
+
+	m.process.Host = &host
+
+	return m.next, nil
 }

@@ -12,5 +12,11 @@ func GetList(hosts ...host.Host) list.Model {
 		items = append(items, ItemHost{Host: h})
 	}
 
-	return list.New(items, list.NewDefaultDelegate(), 0, 0)
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
+	l.Title = "Choose a host (press Enter to select)"
+
+	l.SetFilteringEnabled(false)
+	l.SetShowFilter(false)
+
+	return l
 }

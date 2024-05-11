@@ -1,8 +1,10 @@
 package initial
 
 import (
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/wjojf/go-ssh-tui/internal/screens/actions"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/logo"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/prompt"
@@ -14,13 +16,22 @@ type Model struct {
 	// Input
 	input textinput.Model
 
+	// Spinner
+	spinner spinner.Model
+
 	// Flow control
 	next tea.Model
 }
 
 func NewModel() Model {
+
+	s := spinner.New()
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	s.Spinner = spinner.Points
+
 	return Model{
-		input: prompt.GetInput(),
+		input:   prompt.GetInput(),
+		spinner: s,
 		next: actions.NewModel(actions.ModelOpts{
 			Actions: action.DefaultActions,
 			Process: types.NewProcess(),
@@ -29,7 +40,10 @@ func NewModel() Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return textinput.Blink
+	return tea.Batch(
+		m.spinner.Tick,
+		textinput.Blink,
+	)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -47,6 +61,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m.next, nil
 		}
+	case spinner.TickMsg:
+		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
 	}
 
 	m.input, cmd = m.input.Update(msg)
@@ -59,6 +76,7 @@ func (m Model) View() string {
 	l := logo.New(logo.GetStyles())
 	s += l.Render() + "\n"
 
+	s += m.spinner.View()
 	s += m.input.View()
 
 	return s
