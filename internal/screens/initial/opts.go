@@ -1,9 +1,9 @@
 package initial
 
 import (
-	"github.com/wjojf/go-ssh-tui/internal/types"
+	"github.com/wjojf/go-ssh-tui/internal/types/action"
 )
 
 type ModelOpts struct {
-	Actions []types.Action
+	Actions []action.Action
 }

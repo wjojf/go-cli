@@ -7,6 +7,7 @@ import (
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/logo"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/prompt"
 	"github.com/wjojf/go-ssh-tui/internal/types"
+	"github.com/wjojf/go-ssh-tui/internal/types/action"
 )
 
 type Model struct {
@@ -21,7 +22,8 @@ func NewModel() Model {
 	return Model{
 		input: prompt.GetInput(),
 		next: actions.NewModel(actions.ModelOpts{
-			Actions: types.DefaultActionList,
+			Actions: action.DefaultActions,
+			Process: types.NewProcess(),
 		}),
 	}
 }

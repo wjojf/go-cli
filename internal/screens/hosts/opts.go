@@ -1,11 +1,11 @@
-package actions
+package hosts
 
 import (
 	"github.com/wjojf/go-ssh-tui/internal/types"
-	"github.com/wjojf/go-ssh-tui/internal/types/action"
+	"github.com/wjojf/go-ssh-tui/internal/types/host"
 )
 
 type ModelOpts struct {
-	Actions action.List
+	Hosts   []host.Host
 	Process *types.Process
 }

@@ -1,4 +1,4 @@
-package actions
+package hosts
 
 import "github.com/charmbracelet/lipgloss"
 

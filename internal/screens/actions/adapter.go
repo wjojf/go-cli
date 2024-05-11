@@ -1,27 +1,29 @@
 package actions
 
-import "github.com/wjojf/go-ssh-tui/internal/types"
+import (
+	"github.com/wjojf/go-ssh-tui/internal/types/action"
+)
 
-type FilterableAction struct {
-	Action types.Action
+type ItemAction struct {
+	Action action.Action
 }
 
-func (a FilterableAction) FilterValue() string {
+func (a ItemAction) FilterValue() string {
 	return a.Action.Name()
 }
 
-func (a FilterableAction) Title() string {
+func (a ItemAction) Title() string {
 	return a.Action.Name()
 }
 
-func (a FilterableAction) Description() string {
+func (a ItemAction) Description() string {
 	return a.Action.Description()
 }
 
-func FromActionList(l types.ActionList) []FilterableAction {
-	var actions []FilterableAction
+func FromActionList(l action.List) []ItemAction {
+	var actions []ItemAction
 	for _, a := range l {
-		actions = append(actions, FilterableAction{Action: a})
+		actions = append(actions, ItemAction{Action: a})
 	}
 	return actions
 }
