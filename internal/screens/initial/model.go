@@ -1,11 +1,13 @@
 package initial
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/wjojf/go-ssh-tui/internal/screens/actions"
+	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/loader"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/logo"
 	"github.com/wjojf/go-ssh-tui/internal/screens/initial/components/prompt"
 	"github.com/wjojf/go-ssh-tui/internal/types"
@@ -19,19 +21,19 @@ type Model struct {
 	// Spinner
 	spinner spinner.Model
 
+	// Logo
+	logo *logo.Logo
+
 	// Flow control
 	next tea.Model
 }
 
 func NewModel() Model {
 
-	s := spinner.New()
-	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	s.Spinner = spinner.Points
-
 	return Model{
 		input:   prompt.GetInput(),
-		spinner: s,
+		spinner: loader.GetSpinner(),
+		logo:    logo.New(logo.GetStyles()),
 		next: actions.NewModel(actions.ModelOpts{
 			Actions: action.DefaultActions,
 			Process: types.NewProcess(),
@@ -71,13 +73,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	var s string
-
-	l := logo.New(logo.GetStyles())
-	s += l.Render() + "\n"
-
-	s += m.spinner.View()
-	s += m.input.View()
-
-	return s
+	return fmt.Sprintf(
+		"\n %s \n\n %s %s \n",
+		m.logo.Render(),
+		m.spinner.View(),
+		m.input.View(),
+	)
 }
