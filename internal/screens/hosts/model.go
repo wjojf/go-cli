@@ -4,6 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/wjojf/go-ssh-tui/internal/screens/keys"
 	"github.com/wjojf/go-ssh-tui/internal/types"
 	"github.com/wjojf/go-ssh-tui/internal/types/host"
 )
@@ -28,6 +29,9 @@ func NewModel(opts ModelOpts) *Model {
 		hosts:   opts.Hosts,
 		style:   GetListStyles(80),
 		list:    l,
+		next: keys.NewModel(keys.ModelOpts{
+			Process: opts.Process,
+		}),
 	}
 }
 
@@ -44,7 +48,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyEnter:
-			return m, nil
+			return m.handleEnter()
 		}
 	case tea.WindowSizeMsg:
 		h, v := m.style.GetFrameSize()

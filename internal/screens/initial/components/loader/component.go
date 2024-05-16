@@ -5,11 +5,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-
-func GetSpinner() spinner.Model  {
+func GetSpinner() spinner.Model {
 	s := spinner.New()
 	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	s.Spinner = spinner.Points
+	s.Spinner = spinner.Globe
 
 	return s
 }

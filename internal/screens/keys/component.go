@@ -16,5 +16,4 @@ func GetList(keys []key.PrivateKeyLoader) list.Model {
 	l.Title = "Select a key file"
 
 	return l
-
 }
