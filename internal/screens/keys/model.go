@@ -80,7 +80,7 @@ func (m *Model) handleEnter() (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	}
 
-	return m.next, nil
+	return m.next, m.next.Init()
 }
 
 func (m *Model) setNext() {

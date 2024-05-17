@@ -20,7 +20,6 @@ func NewApp() *App {
 	return &App{
 		tea: tea.NewProgram(
 			initial.NewModel(),
-			tea.WithAltScreen(),
 		),
 	}
 }

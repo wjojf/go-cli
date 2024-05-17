@@ -7,7 +7,6 @@ import (
 	"github.com/wjojf/go-ssh-tui/internal/service/docker"
 	"github.com/wjojf/go-ssh-tui/internal/types"
 	"io"
-	"os"
 )
 
 type Model struct {
@@ -24,32 +23,26 @@ type Model struct {
 }
 
 func NewModel(opts ModelOpts) *Model {
-
-	file, err := os.Create("./debug.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	return &Model{
+	m := &Model{
 		process: opts.Process,
 		service: nil,
 
 		loading: true,
 		err:     nil,
 
-		logger: file,
-
 		progress: progress.New(
 			progress.WithDefaultGradient(),
 			progress.WithColorProfile(termenv.ANSI256),
 		),
 	}
+
+	return m
 }
 
 func (m *Model) Init() tea.Cmd {
 	return tea.Batch(
 		m.startLoading(),
-		immediateTick(),
+		progressTick(),
 	)
 }
 
@@ -86,7 +79,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		progressModel, cmd := m.progress.Update(msg)
 		m.progress = progressModel.(progress.Model)
 		return m, cmd
-
 	}
 
 	return m, nil
