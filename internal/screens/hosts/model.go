@@ -77,7 +77,7 @@ func (m *Model) handleEnter() (tea.Model, tea.Cmd) {
 
 	host := m.hosts[m.list.Cursor()]
 
-	m.process.Host = &host
+	m.process.Host = host
 
 	return m.next, nil
 }

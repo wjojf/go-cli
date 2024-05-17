@@ -21,7 +21,12 @@ func (m *Model) GetSshOpts() *client.SSHOpts {
 		WithPrivateKey(string(key)).
 		WithUser(m.process.User)
 
-	addr, _ := m.process.Host.IP()
+	addr, ok := m.process.Host.IP()
+	if !ok {
+		return opts
+	}
+
+	addr += ":22"
 
 	opts.CfgBuilder = cfg
 	opts.Protocol = "tcp"

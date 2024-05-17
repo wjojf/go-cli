@@ -1,12 +1,13 @@
 package monitor
 
 import (
-	"time"
-
 	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/muesli/termenv"
 	"github.com/wjojf/go-ssh-tui/internal/service/docker"
 	"github.com/wjojf/go-ssh-tui/internal/types"
+	"io"
+	"os"
 )
 
 type Model struct {
@@ -18,9 +19,17 @@ type Model struct {
 	progress progress.Model
 
 	service *docker.MonitorService
+
+	logger io.Writer
 }
 
 func NewModel(opts ModelOpts) *Model {
+
+	file, err := os.Create("./debug.txt")
+	if err != nil {
+		panic(err)
+	}
+
 	return &Model{
 		process: opts.Process,
 		service: nil,
@@ -28,14 +37,19 @@ func NewModel(opts ModelOpts) *Model {
 		loading: true,
 		err:     nil,
 
-		progress: progress.New(progress.WithDefaultGradient()),
+		logger: file,
+
+		progress: progress.New(
+			progress.WithDefaultGradient(),
+			progress.WithColorProfile(termenv.ANSI256),
+		),
 	}
 }
 
 func (m *Model) Init() tea.Cmd {
 	return tea.Batch(
-		progressTick(),
-		m.startLoading,
+		m.startLoading(),
+		immediateTick(),
 	)
 }
 
@@ -43,19 +57,29 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
+		case tea.KeyEsc:
+			return m, tea.Quit
 		}
 
+	case tickMsg:
+		if m.progress.Percent() == 1.0 {
+			return m, nil
+		}
+
+		cmd = m.progress.IncrPercent(0.25)
+		return m, tea.Batch(progressTick(), cmd)
+
 	case errMsg:
-		m.err = msg.Err
+		m.loading, m.err = false, msg.Err
 		return m, nil
 
 	case loadedMsg:
-		m.service = msg.Service
-		m.loading = false
+		m.service, m.loading = msg.Service, false
 		return m, nil
 
 	case progress.FrameMsg:
@@ -63,17 +87,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.progress = progressModel.(progress.Model)
 		return m, cmd
 
-	case tickMsg:
-		if m.progress.Percent() == 1.0 {
-			return m, tea.Quit
-		}
-
-		cmd := m.progress.IncrPercent(0.25)
-
-		return m, tea.Batch(progressTick(), cmd)
 	}
 
-	return m, cmd
+	return m, nil
 }
 
 func (m *Model) View() string {
@@ -86,36 +102,4 @@ func (m *Model) View() string {
 	}
 
 	return "Connected!"
-}
-
-func (m *Model) startLoading() tea.Msg {
-	errors := make(chan error, 1)
-	output := make(chan *docker.MonitorService, 1)
-
-	go func() {
-		defer close(errors)
-		defer close(output)
-
-		serice, err := docker.NewMonitorService(
-			docker.MonitorOpts{SSHOpts: m.GetSshOpts()},
-		)
-		if err != nil {
-			errors <- err
-			return
-		}
-
-		output <- serice
-	}()
-
-	// Artificially slow down the loading process so we can see the progress bar
-	time.Sleep(1 * time.Second)
-
-	for {
-		select {
-		case err := <-errors:
-			return errMsg{Err: err}
-		case s := <-output:
-			return loadedMsg{Service: s}
-		}
-	}
 }

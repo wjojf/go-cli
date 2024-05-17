@@ -71,7 +71,7 @@ func (m *Model) View() string {
 func (m *Model) handleEnter() (tea.Model, tea.Cmd) {
 
 	keyLoader := m.keys[m.list.Cursor()]
-	m.process.PrivateKeyLoader = &keyLoader
+	m.process.PrivateKeyLoader = keyLoader
 
 	// Set next model
 	m.setNext()

@@ -18,6 +18,9 @@ type Model struct {
 	// Input
 	input textinput.Model
 
+	// Process
+	process *types.Process
+
 	// Spinner
 	spinner spinner.Model
 
@@ -30,13 +33,19 @@ type Model struct {
 
 func NewModel() Model {
 
+	process := types.NewProcess()
+
 	return Model{
+
+		process: process,
+
 		input:   prompt.GetInput(),
 		spinner: loader.GetSpinner(),
 		logo:    logo.New(logo.GetStyles()),
+
 		next: actions.NewModel(actions.ModelOpts{
 			Actions: action.DefaultActions,
-			Process: types.NewProcess(),
+			Process: process,
 		}),
 	}
 }
@@ -58,6 +67,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case tea.KeyEnter:
+			m.process.User = m.input.Value()
 			if m.next == nil {
 				return m, tea.Quit
 			}
