@@ -14,4 +14,11 @@ type loadedMsg struct {
 	Service *docker.MonitorService
 }
 
+type monitorMsg struct {
+	Stats []docker.ContainerInfo
+	Error error
+}
+
 type tickMsg time.Time
+
+type monitorTickMsg time.Time

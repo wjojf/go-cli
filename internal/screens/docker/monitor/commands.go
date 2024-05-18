@@ -3,8 +3,9 @@ package monitor
 import (
 	"context"
 	"errors"
-	"github.com/wjojf/go-ssh-tui/internal/service/docker"
 	"time"
+
+	"github.com/wjojf/go-ssh-tui/internal/service/docker"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -46,8 +47,14 @@ func (m *Model) startLoading() tea.Cmd {
 		}
 	}
 }
-func progressTick() tea.Cmd {
+func loaderTick() tea.Cmd {
 	return tea.Tick(250*time.Millisecond, func(t time.Time) tea.Msg {
+		return tickMsg(t)
+	})
+}
+
+func monitorTick() tea.Cmd {
+	return tea.Tick(10*time.Second, func(t time.Time) tea.Msg {
 		return tickMsg(t)
 	})
 }
